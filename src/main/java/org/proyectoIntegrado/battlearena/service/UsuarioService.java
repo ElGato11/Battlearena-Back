@@ -8,6 +8,7 @@ import org.proyectoIntegrado.battlearena.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class UsuarioService {
     }
 
     public Usuario save(Usuario usuario) {
-        if (usuarioRepository.findByNombre(usuario.getNombre())) {
+        if (usuarioRepository.findByNombre(usuario.getNombre()) != null) { //solucion alternativa .getNombre()
             throw new RuntimeException("Ya existe un usuario con ese nombre.");
         }
         Usuario nuevoUsuario = Usuario.builder()
@@ -51,5 +52,17 @@ public class UsuarioService {
             return usuario.getPersonajes();
         }
         return Collections.emptyList();
+    }
+
+    public Usuario login(String nombre, String clave) {
+        System.out.println(nombre + clave);
+        Usuario u = usuarioRepository.findByNombre(nombre);
+        if (u == null) throw new RuntimeException("Usuario no encontrado");
+        if (!u.getClave().equals(clave)) throw new RuntimeException("Contraseña incorrecta");
+        return u;
+    }
+
+    public boolean findByNombre(String nombre) {
+        return usuarioRepository.findByNombre(nombre) != null; //comprobar, igual que arriba
     }
 }

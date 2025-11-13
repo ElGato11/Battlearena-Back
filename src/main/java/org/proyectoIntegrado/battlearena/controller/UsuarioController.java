@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuario")
@@ -28,9 +29,14 @@ public class UsuarioController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario){
+    public ResponseEntity<?> crear(@RequestBody Usuario usuario) {
+        if (usuario.getAdmin() == null) usuario.setAdmin(false);
+        if (usuarioService.findByNombre(usuario.getNombre())) {
+            return ResponseEntity.status(409).body("El nombre ya está en uso");
+        }
         return ResponseEntity.ok(usuarioService.save(usuario));
     }
+
 
     @PostMapping("/borrar/{id}")
     public ResponseEntity<Void> borrarUsuario(@PathVariable Long id){
@@ -45,6 +51,13 @@ public class UsuarioController {
 
     @PostMapping("/editar")
     public ResponseEntity<Usuario> editarUsuario(@RequestBody Usuario usuario){
-        return ResponseEntity.ok(usuarioService.save(usuario));
+        return ResponseEntity.ok(usuarioService.save(usuario)); 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody Map<String, String> body) {
+        String nombre = body.get("nombre");
+        String clave = body.get("clave");
+        return ResponseEntity.ok(usuarioService.login(nombre, clave));
     }
 }

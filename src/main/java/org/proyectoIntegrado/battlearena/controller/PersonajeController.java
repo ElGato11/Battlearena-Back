@@ -28,7 +28,7 @@ public class PersonajeController {
         return ResponseEntity.ok(personajeService.getAll());
     }
 
-    @PostMapping("/crear/{id}")
+    @PostMapping("/crear")
     public ResponseEntity<Personaje> crearPersonaje(@RequestBody Personaje personaje){
         return ResponseEntity.ok(personajeService.save(personaje));
     }

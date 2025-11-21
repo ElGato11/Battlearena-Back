@@ -25,21 +25,6 @@ public class PersonajeService {
         return personajeRepository.findAll();
     }
 
-    public Personaje save(Personaje personaje) {
-        usuarioRepository.findById(personaje.getIdUsuario()).orElseThrow(() -> new RuntimeException("el usuario no existe id: " + personaje.getIdUsuario()));
-        Personaje nuevoPersonaje = Personaje.builder()
-                .idUsuario(personaje.getIdUsuario())
-                .nombre(personaje.getNombre())
-                .vigor(personaje.getVigor())
-                .fuerza(personaje.getFuerza())
-                .destreza(personaje.getDestreza())
-                .inteligencia(personaje.getInteligencia())
-                .carisma(personaje.getCarisma())
-                .sabiduria(personaje.getSabiduria())
-                .build();
-
-        return personajeRepository.save(nuevoPersonaje);
-    }
 
     public void delete(Long id){
         Personaje personajeBorrado = personajeRepository.findById(id).orElse(null);

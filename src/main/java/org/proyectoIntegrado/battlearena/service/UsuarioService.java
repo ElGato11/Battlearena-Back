@@ -1,14 +1,14 @@
 package org.proyectoIntegrado.battlearena.service;
 
 
-
 import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Usuario;
+import org.proyectoIntegrado.battlearena.dto.PersonajeDTO;
+import org.proyectoIntegrado.battlearena.repository.PersonajeRepository;
 import org.proyectoIntegrado.battlearena.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,9 +17,11 @@ public class UsuarioService {
 
     @Autowired
     private final UsuarioRepository usuarioRepository;
+    private final PersonajeRepository personajeRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PersonajeRepository personajeRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.personajeRepository = personajeRepository;
     }
 
     public List<Usuario> getAll() {
@@ -39,6 +41,22 @@ public class UsuarioService {
         return usuarioRepository.save(nuevoUsuario);
     }
 
+    public Personaje crearPersonaje(Long idUsuario, PersonajeDTO dto) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Personaje nuevoPersonaje = Personaje.builder()
+                .usuario(usuario)
+                .nombre(dto.getNombre())
+                .fuerza(dto.getFuerza())
+                .destreza(dto.getDestreza())
+                .vigor(dto.getVigor())
+                .inteligencia(dto.getInteligencia())
+                .sabiduria(dto.getSabiduria())
+                .carisma(dto.getCarisma())
+                .build();
+        return personajeRepository.save(nuevoPersonaje);
+    }
+
     public void delete(Long id) {
         Usuario usuarioBorrado = usuarioRepository.findById(id).orElse(null);
         if(usuarioBorrado != null){
@@ -46,12 +64,8 @@ public class UsuarioService {
         }
     }
 
-    public List<Personaje> getPersonajes(Long id) {
-        Usuario usuario = usuarioRepository.findById(id).orElse(null);
-        if(usuario != null){
-            return usuario.getPersonajes();
-        }
-        return Collections.emptyList();
+    public List<Personaje> getPersonajes(Long idUsuario) {
+        return personajeRepository.findByUsuarioIdUsuario(idUsuario);
     }
 
     public Usuario login(String nombre, String clave) {

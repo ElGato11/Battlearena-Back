@@ -1,11 +1,13 @@
 package org.proyectoIntegrado.battlearena.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +23,8 @@ public class Usuario {
     private String nombre;
     private Boolean admin;
     private String clave;
-    @OneToMany
-    private List<Personaje> personajes;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Personaje> personajes = new ArrayList<>();
+
 }

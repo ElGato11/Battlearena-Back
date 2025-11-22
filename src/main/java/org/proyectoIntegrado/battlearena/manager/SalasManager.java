@@ -59,16 +59,19 @@ public class SalasManager {
         }
     }
 
-    public void seleccionarPersonaje(String nombreSala, Long usuarioId, Long idPersonaje) {
+    public boolean seleccionarPersonaje(String nombreSala, Long usuarioId, Long idPersonaje) {
         Sala sala = salas.get(nombreSala);
-        if (sala == null) return;
+        boolean ret = false;
+        if (sala == null) return false; //revisalo luego
         if (usuarioId.equals(sala.getAnfitrion())) {
             sala.setPAnfitrion(idPersonaje);
+            ret = true;
         } else if (usuarioId.equals(sala.getContrincante())) {
             sala.setPContrincante(idPersonaje);
+            ret = true;
         }
-
         messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
+        return ret;
     }
 
 

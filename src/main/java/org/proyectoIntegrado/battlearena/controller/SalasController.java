@@ -40,15 +40,12 @@ public class SalasController {
 
     @PostMapping("/seleccionar-personaje")
     //devuelvo un 200 sin contenido asi que ?
-    public ResponseEntity<Void> seleccionarPersonaje(@RequestBody SeleccionarPersonajeDTO req) {
-
-        salasManager.seleccionarPersonaje(
+    public ResponseEntity<Boolean> seleccionarPersonaje(@RequestBody SeleccionarPersonajeDTO req) {
+        return ResponseEntity.ok(salasManager.seleccionarPersonaje(
                 req.getNombreSala(),
                 req.getUsuarioId(),
                 req.getPersonajeId()
-        );
-
-        return ResponseEntity.noContent().build();
+        ));
     }
 
     @PostMapping("/existe/{nombre}")

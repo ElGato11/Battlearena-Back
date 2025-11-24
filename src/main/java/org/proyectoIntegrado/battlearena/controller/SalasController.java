@@ -1,6 +1,7 @@
 package org.proyectoIntegrado.battlearena.controller;
 import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Sala;
+import org.proyectoIntegrado.battlearena.dto.SalaMessageDTO;
 import org.proyectoIntegrado.battlearena.dto.SalaRequestDTO;
 import org.proyectoIntegrado.battlearena.manager.SalasManager;
 import org.proyectoIntegrado.battlearena.service.PersonajeService;
@@ -42,14 +43,14 @@ public class SalasController {
     }
 
     @GetMapping("/{nombre}")
-    public ResponseEntity<Sala> getSala(@PathVariable String nombre) {
-        Sala sala = salasManager.getSala(nombre).orElse(null);
+    public ResponseEntity<SalaMessageDTO> getSala(@PathVariable String nombre) {
+        SalaMessageDTO sala = salasManager.getSalaRequest(nombre);
         return ResponseEntity.ok(sala);
     }
 
-    @PostMapping("/existe/{nombre}")
+    @GetMapping("/existe/{nombre}")
     public ResponseEntity<Boolean> existeSala(@PathVariable String nombre) {
-        boolean existe = salasManager.getSala(nombre).isPresent();
+        boolean existe = salasManager.getSala(nombre) != null;
         return ResponseEntity.ok(existe);
     }
 

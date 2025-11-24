@@ -2,6 +2,8 @@ package org.proyectoIntegrado.battlearena.manager;
 
 import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Sala;
+import org.proyectoIntegrado.battlearena.dto.SalaMessageDTO;
+import org.proyectoIntegrado.battlearena.dto.SalaRequestDTO;
 import org.proyectoIntegrado.battlearena.exception.SalaNameExistException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,7 +35,7 @@ public class SalasManager {
             throw new SalaNameExistException(nombre);
         }
         salas.put(sala.getNombre(), sala);
-        messagingTemplate.convertAndSend("/topic/lista-salas", this.getTodas());
+        wsTodas();
         return sala;
     }
 
@@ -41,8 +43,11 @@ public class SalasManager {
         return salas.containsKey(nombre);
     }
 
-    public Optional<Sala> getSala(String nombre) {
-        return Optional.ofNullable(salas.get(nombre));
+    public Sala getSala(String nombre) {
+        return salas.get(nombre);
+    }
+    public SalaMessageDTO getSalaRequest(String nombre){
+        return salaRequest(this.getSala(nombre));
     }
 
     public Collection<Sala> getTodas() {
@@ -52,7 +57,7 @@ public class SalasManager {
 
     public void eliminarSala(String nombre) {
         salas.remove(nombre);
-        messagingTemplate.convertAndSend("/topic/lista-salas", this.getTodas());
+        wsTodas();
     }
 
     public boolean unirJugador(String nombre, Personaje pContrincante) {
@@ -60,10 +65,25 @@ public class SalasManager {
         Sala sala = salas.get(nombre);
         if (sala != null && !sala.getPAnfitrion().getUsuario().getIdUsuario().equals(pContrincante.getUsuario().getIdUsuario())) {
             sala.setPContrincante(pContrincante);
-            messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
+            wsSala(sala);
             ret = true;
         }
         return ret;
+    }
+
+    private void wsSala(Sala sala){
+        SalaMessageDTO salaMessageDTO = salaRequest(sala);
+        messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), salaMessageDTO);
+    }
+
+    private void wsTodas(){
+        messagingTemplate.convertAndSend("/topic/lista-salas", this.getTodas());
+    }
+
+    private SalaMessageDTO salaRequest(Sala sala){
+        String nombreContrincante = null;
+        if(sala.getPContrincante() != null && sala.getPContrincante().getUsuario() != null) nombreContrincante = nombreContrincante = sala.getPContrincante().getUsuario().getNombre();
+        return new SalaMessageDTO(sala, nombreContrincante, sala.getPAnfitrion().getUsuario().getNombre());
     }
 
 

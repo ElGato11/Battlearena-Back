@@ -19,5 +19,14 @@ public class Sala {
         this.pAnfitrion = anfitrion;
     }
 
+    public Sala(Sala sala){
+        this.id = sala.id;
+        this.nombre = sala.nombre;
+        this.pAnfitrion = sala.pAnfitrion;
+        this.pContrincante = sala.pContrincante;
+    }
 
+
+    public Sala() {
+    }
 }

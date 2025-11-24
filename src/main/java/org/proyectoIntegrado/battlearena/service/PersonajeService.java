@@ -37,4 +37,8 @@ public class PersonajeService {
         personajeRepository.findById(personaje.getId()).orElseThrow(() -> new RuntimeException("Personaje no encontrado, id: "+personaje.getId()));
         return personajeRepository.save(personaje);
     }
+
+    public Personaje findPersonaje(Long id){
+        return personajeRepository.findById(id).orElseThrow(() -> new RuntimeException("Personaje no encontrado, id: "+ id));
+    }
 }

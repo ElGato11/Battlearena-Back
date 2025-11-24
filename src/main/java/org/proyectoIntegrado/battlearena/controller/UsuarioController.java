@@ -31,7 +31,7 @@ public class UsuarioController {
     @PostMapping("/crear")
     public ResponseEntity<?> crear(@RequestBody Usuario usuario) {
         if (usuario.getAdmin() == null) usuario.setAdmin(false);
-        if (usuarioService.findByNombre(usuario.getNombre())) {
+        if (usuarioService.findByNombre(usuario.getNombre()) != null) { //supongamos que esto funciona
             return ResponseEntity.status(409).body("El nombre ya está en uso");
         }
         return ResponseEntity.ok(usuarioService.save(usuario));

@@ -76,7 +76,7 @@ public class UsuarioService {
         return u;
     }
 
-    public boolean findByNombre(String nombre) {
-        return usuarioRepository.findByNombre(nombre) != null; //comprobar, igual que arriba
+    public Usuario findByNombre(String nombre){
+        return  usuarioRepository.findByNombre(nombre);
     }
 }

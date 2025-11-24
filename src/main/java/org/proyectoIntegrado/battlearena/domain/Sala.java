@@ -8,17 +8,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Sala {
     private int id;
     private String nombre;
-    private Long anfitrion;
-    private Long contrincante;
-    private Long pAnfitrion;
-    private Long pContrincante;
+    private Personaje pAnfitrion;
+    private Personaje pContrincante;
 
     private static final AtomicInteger contadorId = new AtomicInteger(0); //garantiza que cada id sea unico
 
-    public Sala( String nombre, Long anfitrion) {
+    public Sala( String nombre, Personaje anfitrion) {
         this.id = contadorId.incrementAndGet();
         this.nombre = nombre;
-        this.anfitrion = anfitrion;
+        this.pAnfitrion = anfitrion;
     }
 
 

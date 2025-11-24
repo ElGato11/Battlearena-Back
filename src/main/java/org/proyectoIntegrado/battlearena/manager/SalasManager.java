@@ -1,5 +1,6 @@
 package org.proyectoIntegrado.battlearena.manager;
 
+import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Sala;
 import org.proyectoIntegrado.battlearena.exception.SalaNameExistException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/salas")
@@ -25,13 +27,13 @@ public class SalasManager {
     }
 
 
-    public Sala crearSala(String nombre, Long anfitrion) {
-        Sala sala = new Sala(nombre, anfitrion);
+    public Sala crearSala(String nombre, Personaje pAnfitrion) {
+        Sala sala = new Sala(nombre, pAnfitrion);
         if (existe(nombre)) {
             throw new SalaNameExistException(nombre);
         }
         salas.put(sala.getNombre(), sala);
-        messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
+        messagingTemplate.convertAndSend("/topic/lista-salas", this.getTodas());
         return sala;
     }
 
@@ -45,32 +47,22 @@ public class SalasManager {
 
     public Collection<Sala> getTodas() {
         return salas.values();
+
     }
 
     public void eliminarSala(String nombre) {
         salas.remove(nombre);
+        messagingTemplate.convertAndSend("/topic/lista-salas", this.getTodas());
     }
 
-    public void unirJugador(String nombre, Long contrincante) {
-        Sala sala = salas.get(nombre);
-        if (sala != null && !sala.getAnfitrion().equals(contrincante)) {
-            sala.setContrincante(contrincante);
-            messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
-        }
-    }
-
-    public boolean seleccionarPersonaje(String nombreSala, Long usuarioId, Long idPersonaje) {
-        Sala sala = salas.get(nombreSala);
+    public boolean unirJugador(String nombre, Personaje pContrincante) {
         boolean ret = false;
-        if (sala == null) return false; //revisalo luego
-        if (usuarioId.equals(sala.getAnfitrion())) {
-            sala.setPAnfitrion(idPersonaje);
-            ret = true;
-        } else if (usuarioId.equals(sala.getContrincante())) {
-            sala.setPContrincante(idPersonaje);
+        Sala sala = salas.get(nombre);
+        if (sala != null && !sala.getPAnfitrion().getUsuario().getIdUsuario().equals(pContrincante.getUsuario().getIdUsuario())) {
+            sala.setPContrincante(pContrincante);
+            messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
             ret = true;
         }
-        messagingTemplate.convertAndSend("/topic/sala/" + sala.getNombre(), sala);
         return ret;
     }
 

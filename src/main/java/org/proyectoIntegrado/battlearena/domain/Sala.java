@@ -10,6 +10,8 @@ public class Sala {
     private String nombre;
     private Personaje pAnfitrion;
     private Personaje pContrincante;
+    private float hpA;
+    private float hpC;
 
     private static final AtomicInteger contadorId = new AtomicInteger(0); //garantiza que cada id sea unico
 
@@ -24,8 +26,9 @@ public class Sala {
         this.nombre = sala.nombre;
         this.pAnfitrion = sala.pAnfitrion;
         this.pContrincante = sala.pContrincante;
+        this.hpA = sala.hpA;
+        this.hpC = sala.hpC;
     }
-
 
     public Sala() {
     }

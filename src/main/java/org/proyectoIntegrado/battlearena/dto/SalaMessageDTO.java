@@ -1,6 +1,5 @@
 package org.proyectoIntegrado.battlearena.dto;
 
-import lombok.Builder;
 import lombok.Data;
 import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Sala;
@@ -13,6 +12,8 @@ public class SalaMessageDTO {
     private String contrincante;
     private Personaje pAnfitrion;
     private Personaje pContrincante;
+    private float hpA;
+    private float hpC;
 
     public SalaMessageDTO(Sala sala, String contrincante, String anfitrion) {
         this.id = sala.getId();
@@ -21,6 +22,8 @@ public class SalaMessageDTO {
         this.contrincante = contrincante;
         this.pAnfitrion = sala.getPAnfitrion();
         this.pContrincante = sala.getPContrincante();
+    }
+    public SalaMessageDTO(){
     }
 }
 

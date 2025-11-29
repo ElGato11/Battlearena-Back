@@ -16,11 +16,9 @@ import java.util.Collection;
 @RequestMapping("/salas")
 @CrossOrigin(origins = {"http://localhost:4200/"})
 public class SalasController {
-    @Autowired
+
     private final SalasManager salasManager;
-    @Autowired
     private final UsuarioService usuarioService;
-    @Autowired
     private final PersonajeService personajeService;
 
     public SalasController(SalasManager salasManager, UsuarioService usuarioService, PersonajeService personajeService) {this.salasManager = salasManager;
@@ -57,6 +55,12 @@ public class SalasController {
     @DeleteMapping("/borrar/{nombre}")
     public ResponseEntity<Void> borrarSala(@PathVariable String nombre) {
         salasManager.eliminarSala(nombre);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/borrarContrincante/{nombre}")
+    public ResponseEntity<Void> borrarContrincante(@PathVariable String nombre) {
+        salasManager.eliminarContrincante(nombre);
         return ResponseEntity.noContent().build();
     }
 

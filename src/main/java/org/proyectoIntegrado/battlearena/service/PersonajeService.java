@@ -27,10 +27,8 @@ public class PersonajeService {
 
 
     public void delete(Long id){
-        Personaje personajeBorrado = personajeRepository.findById(id).orElse(null);
-        if(personajeBorrado != null){
-            personajeRepository.delete(personajeBorrado);
-        }
+        System.out.println("esto furula");
+        personajeRepository.deleteById(id);
     }
 
     public Personaje update(Personaje personaje) {

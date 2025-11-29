@@ -18,9 +18,8 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:4200/"})
 public class PersonajeController {
 
-    @Autowired
+
     private final PersonajeService personajeService;
-    @Autowired
     private final UsuarioService usuarioService;
 
     public PersonajeController(PersonajeService personajeService, UsuarioService usuarioService) {
@@ -38,8 +37,9 @@ public class PersonajeController {
         return ResponseEntity.ok(usuarioService.crearPersonaje(idUsuario,personaje));
     }
 
-    @PostMapping("/borrar/{id}")
+    @DeleteMapping("/borrar/{id}")
     public ResponseEntity<Void> borrarPersonaje(@PathVariable Long id){
+        System.out.println("aqui llega" + id);
         personajeService.delete(id);
         return ResponseEntity.noContent().build();
     }

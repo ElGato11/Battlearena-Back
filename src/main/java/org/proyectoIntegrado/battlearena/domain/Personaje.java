@@ -15,10 +15,16 @@ public class Personaje {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
+
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_clase")
+    private Clase clase;
+
     private String nombre;
     private int vigor;
     private int fuerza;
@@ -26,4 +32,15 @@ public class Personaje {
     private int inteligencia;
     private int sabiduria;
     private int carisma;
+
+    public float getMaxHp(){
+        return (this.getVigorTotal() +  this.clase.getBonoVigor()) * 2;
+    }
+    public int getVigorTotal() { return vigor + clase.getBonoVigor(); }
+    public int getFuerzaTotal() { return fuerza + clase.getBonoFuerza(); }
+    public int getDestrezaTotal() { return destreza + clase.getBonoDestreza(); }
+    public int getInteligenciaTotal() { return inteligencia + clase.getBonoInteligencia(); }
+    public int getSabiduriaTotal() { return sabiduria + clase.getBonoSabiduria(); }
+    public int getCarismaTotal() { return carisma + clase.getBonoCarisma(); }
+
 }

@@ -32,7 +32,7 @@ public class SalasController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Sala> crearSala(@RequestBody SalaRequestDTO body) {
+    public ResponseEntity<Sala> crearSala(@org.jetbrains.annotations.NotNull @RequestBody SalaRequestDTO body) {
         String nombre =body.getNombreSala();
         Long personaje =body.getPersonaje();
         Personaje anfitrion = personajeService.findPersonaje(personaje);
@@ -40,9 +40,21 @@ public class SalasController {
         return ResponseEntity.ok(salaCreada);
     }
 
+    @GetMapping("/atacar/{nombre}/{id}")
+    public ResponseEntity<Void> atacar(@PathVariable String nombre, @PathVariable Long id) {
+        salasManager.atacar(nombre, id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{nombre}")
     public ResponseEntity<SalaMessageDTO> getSala(@PathVariable String nombre) {
         SalaMessageDTO sala = salasManager.getSalaRequest(nombre);
+        return ResponseEntity.ok(sala);
+    }
+
+    @GetMapping("/combateIniciado/{nombre}")
+    public ResponseEntity<SalaMessageDTO> iniciarCombate(@PathVariable String nombre) {
+        SalaMessageDTO sala = salasManager.iniciarCombate(nombre);
         return ResponseEntity.ok(sala);
     }
 
@@ -68,6 +80,11 @@ public class SalasController {
     public ResponseEntity<Boolean> unirseSala(@RequestBody SalaRequestDTO body) {
         Personaje personaje = personajeService.findPersonaje(body.getPersonaje());
         return ResponseEntity.ok(salasManager.unirJugador(body.getNombreSala(),personaje));
+    }
+
+    @GetMapping("/hp/{id}")
+    public ResponseEntity<Float> iniciarCombate(@PathVariable long id) {
+        return ResponseEntity.ok(this.personajeService.findPersonaje(id).getMaxHp());
     }
 
 }

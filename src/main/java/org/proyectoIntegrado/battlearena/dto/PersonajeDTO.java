@@ -13,4 +13,5 @@ public class PersonajeDTO {
     private Integer inteligencia;
     private Integer sabiduria;
     private Integer carisma;
+    private String Clase;
 }

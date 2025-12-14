@@ -4,6 +4,7 @@ import org.proyectoIntegrado.battlearena.domain.Personaje;
 import org.proyectoIntegrado.battlearena.domain.Sala;
 import org.proyectoIntegrado.battlearena.dto.SalaMessageDTO;
 import org.proyectoIntegrado.battlearena.exception.SalaNameExistException;
+import org.proyectoIntegrado.battlearena.service.PersonajeService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +25,11 @@ public class SalasManager {
 
     private final Map<String, Sala> salas = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
+    private final PersonajeService personajeService;
 
-    public SalasManager(SimpMessagingTemplate messagingTemplate) {
+    public SalasManager(SimpMessagingTemplate messagingTemplate, PersonajeService personajeService) {
         this.messagingTemplate = messagingTemplate;
+        this.personajeService = personajeService;
     }
 
 
@@ -65,7 +68,7 @@ public class SalasManager {
     public boolean unirJugador(String nombre, Personaje pContrincante) {
         boolean ret = false;
         Sala sala = salas.get(nombre);
-        if (sala != null && !sala.getPAnfitrion().getUsuario().getIdUsuario().equals(pContrincante.getUsuario().getIdUsuario())) {
+        if (sala != null && sala.getPAnfitrion().getUsuario().getIdUsuario() != pContrincante.getUsuario().getIdUsuario()) {
             sala.setPContrincante(pContrincante);
             wsSala(sala, sala.getNombre());
             ret = true;
@@ -77,6 +80,19 @@ public class SalasManager {
         Sala sala = salas.get(nombre);
         sala.setPContrincante(null);
         wsSala(sala, sala.getNombre());
+    }
+
+    public void atacar(String nombre, Long id){
+        Sala sala = salas.get(nombre);
+        sala.atacar(id);
+        wsSala(sala, nombre);
+    }
+
+    public SalaMessageDTO iniciarCombate(String nombre) {
+        Sala targetSala = this.getSala(nombre);
+        targetSala.iniciarCombate();
+        wsSala(targetSala,nombre);
+        return salaRequest(targetSala);
     }
 
     private void wsSala(Sala sala, String nombre){
@@ -94,6 +110,4 @@ public class SalasManager {
         if(sala.getPContrincante() != null && sala.getPContrincante().getUsuario() != null) nombreContrincante = sala.getPContrincante().getUsuario().getNombre();
         return new SalaMessageDTO(sala, nombreContrincante, sala.getPAnfitrion().getUsuario().getNombre());
     }
-
-
 }

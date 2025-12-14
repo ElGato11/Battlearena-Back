@@ -18,11 +18,12 @@ import java.util.List;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idUsuario;
+    private long idUsuario;
     @Column(unique = true)
     private String nombre;
     private Boolean admin;
     private String clave;
+    private String foto;
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Personaje> personajes = new ArrayList<>();
